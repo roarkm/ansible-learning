@@ -1,0 +1,24 @@
+---
+- name: Install Davinci Resolve in Rocky Linux distrobox container
+  hosts: all
+  become: false
+  tasks:
+    - name: Creating RockyLinux8.3 distrobox container
+      ansible.builtin.shell: |
+        distrobox create --image quay.io/rockylinux/rockylinux:8.3 --additional-packages \
+        "unzip git iproute fuse librsvg2-devel alsa-lib apr apr-util libXcursor libXi libXrandr \
+        libXtst mesa-libGLU pulseaudio-libs libXinerama polkit polkit-devel libxcrypt-compat \
+        xhost libglvnd-egl libglvnd-opengl libxkbcommon libxkbcommon-x11 mtdev xcb-util \
+        xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xcb-util-cursor fuse-libs ocl-icd" \
+        --nvidia --name resolve
+    #- name: Download Davinci Resolve
+    #- name: Extract Davinci Resolve
+    # unzip DR.zip
+
+    #- name: Install Davinci Resolve in rocky linux container
+    # distrobox enter resolve
+    # chmod +x DR.run
+    # sudo ./DR.run
+    # Links
+    #https://swr.cloud.blackmagicdesign.com/DaVinciResolve/v20.0.1/DaVinci_Resolve_Studio_20.0.1_Linux.zip?verify=1753670665-56Matx7c3X9Zc4gZkyrzP%2BQnC7ndfsZeUykM05L68pI%3D
+    #https://swr.cloud.blackmagicdesign.com/DaVinciResolve/v20.0.1/DaVinci_Resolve_20.0.1_Linux.zip?verify=1753670734-NAfqVVWxC79cy9UrUciryKE6hQO2ll%2FlU5lvseQNEJo%3D

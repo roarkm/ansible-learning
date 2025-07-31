@@ -1,0 +1,59 @@
+---
+- name: Hello Ansible
+  hosts: all
+  become: true # call this playbook -k -K flags (ssh pass and sudo pass)
+  tasks:
+    - name: My Test
+      command: mkdir -p /home/m/Documents/ansible_test
+
+    - name: Run apt update
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Run apt upgrade
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Add VeraCrypt PPA
+      ansible.builtin.apt_repository:
+        repo: 'ppa:unit193/encryption'
+        state: present
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install VeraCrypt
+      ansible.builtin.apt:
+        name: veracrypt
+        state: present
+
+    - name: Install make
+      apt:
+        name: make
+        state: present
+
+    - name: Install git
+      apt:
+        name: git
+        state: present
+
+    - name: Install curl package
+      apt:
+        name: curl
+        state: present
+
+    - name: Install recommended NVIDIA driver
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "nvidia-driver-{{ nvidia_driver_version | default('575') }}"
+        #- "nvidia-driver-{{ nvidia_driver_version | default('575') }}"
+      notify: Reboot system
+
+  #handlers:
+    #- name: Reboot system
+      #ansible.builtin.reboot:
+        #reboot_timeout: 600

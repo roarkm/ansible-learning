@@ -1,0 +1,49 @@
+---
+- name: Install NVIDIA CUDA Toolkit on Ubuntu
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Download NVIDIA CUDA GPG key
+      ansible.builtin.shell: |
+        wget https://developer.download.nvidia.com/compute/cuda/repos/{{ ansible_distribution|lower }}{{ ansible_distribution_version | replace('.','') }}/x86_64/cuda-keyring_1.1-1_all.deb
+        dpkg -i cuda-keyring_1.1-1_all.deb
+      args:
+        creates: /usr/share/keyrings/cuda-archive-keyring.gpg
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install NVIDIA CUDA Toolkit
+      ansible.builtin.apt:
+        name: cuda-toolkit-{{ cuda_version | default('latest') }} # e.g., cuda-toolkit-12-9
+        state: present
+      vars:
+        cuda_version: "12-9" # Specify your desired CUDA version here
+
+    - name: Set CUDA environment variables
+      ansible.builtin.blockinfile:
+        path: /etc/profile.d/cuda.sh
+        create: true
+        mode: '0644'
+        block: |
+          export PATH=/usr/local/cuda-{{ cuda_version | default('latest') }}/bin${PATH:+:${PATH}}
+          export LD_LIBRARY_PATH=/usr/local/cuda-{{ cuda_version | default('latest') }}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+      vars:
+        cuda_version: "12.9" # Ensure this matches the installed version
+
+    - name: Set CUDA environment variables
+      ansible.builtin.blockinfile:
+        path: /home/{{ ansible_user }}/.bashrc
+        create: true
+        mode: '0644'
+        block: |
+          export PATH=/usr/local/cuda-{{ cuda_version | default('latest') }}/bin${PATH:+:${PATH}}
+          export LD_LIBRARY_PATH=/usr/local/cuda-{{ cuda_version | default('latest') }}/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+      vars:
+        cuda_version: "12.9" # Ensure this matches the installed version
+    #- name: Reboot if necessary (e.g., after driver installation)
+      #ansible.builtin.reboot:
+      #when: ansible_reboot_required is defined and ansible_reboot_required
+        #wget https://developer.download.nvidia.com/compute/cuda/repos/{{ ansible_distribution|lower }}{{ ansible_distribution_major_version }}{{ ansible_distribution_minor_version }}/x86_64/cuda-keyring_1.1-1_all.deb

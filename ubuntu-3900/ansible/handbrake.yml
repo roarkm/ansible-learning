@@ -1,0 +1,35 @@
+---
+- name: Install Handbrake
+  hosts: all
+  become: true # call this playbook -k -K flags (ssh pass and sudo pass)
+  tasks:
+    - name: Add HandBrake PPA
+      ansible.builtin.apt_repository:
+        repo: 'ppa:ubuntuhandbook1/handbrake'
+        state: present
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Handbrake
+      ansible.builtin.apt:
+        name: handbrake
+        state: present
+        install_recommends: yes
+
+    - name: Install ubuntu-restricted-extras
+      ansible.builtin.apt:
+        name: ubuntu-restricted-extras
+        state: present
+        update_cache: yes
+
+    - name: Install VLC
+      apt:
+        name: vlc
+        state: present
+
+    - name: Install VLC
+      apt:
+        name: totem
+        state: present

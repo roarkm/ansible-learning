@@ -1,0 +1,18 @@
+---
+- name: Install Distrobox using official script
+  hosts: all
+  become: true
+  tasks:
+    - name: Download and execute Distrobox installation script
+      ansible.builtin.shell: curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh
+      args:
+        creates: /usr/local/bin/distrobox # Prevents re-running if already installed
+
+    - name: Update apt package index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Podman
+      ansible.builtin.apt:
+        name: podman
+        state: present
