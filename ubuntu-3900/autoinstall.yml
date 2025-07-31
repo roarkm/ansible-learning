@@ -1,0 +1,21 @@
+autoinstall:
+  version: 1
+  identity:
+    realname: m
+    username: m
+    password: "$1$eqUKBUPV$sCBo0/9v2Px0r2XgFjFU0/"
+    hostname: ubu-vm1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  timezone: "America/Los_Angeles"
+  ssh:
+    install-server: true
+    allow-pw: true
+    #authorized-keys: []
+  refresh-installer:
+    update: true
+    channel: "stable/ubuntu-$REL"
+  source:
+    id: ubuntu-desktop-minimal
+  shutdown: reboot
