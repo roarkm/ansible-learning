@@ -1,0 +1,15 @@
+---
+- name: Install Handbrake
+  hosts: all
+  become: true # call this playbook -k -K flags (ssh pass and sudo pass)
+  tasks:
+    - name: Add the Kdenlive stable PPA
+      ansible.builtin.apt_repository:
+        repo: 'ppa:kdenlive/kdenlive-stable' # Using the official PPA here
+        state: present
+        update_cache: yes
+    - name: Install Kdenlive and dependencies
+      ansible.builtin.apt:
+        name: kdenlive
+        state: present
+
