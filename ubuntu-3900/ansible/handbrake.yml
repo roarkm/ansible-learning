@@ -18,12 +18,6 @@
         state: present
         install_recommends: yes
 
-    - name: Install ubuntu-restricted-extras
-      ansible.builtin.apt:
-        name: ubuntu-restricted-extras
-        state: present
-        update_cache: yes
-
     - name: Install VLC
       apt:
         name: vlc

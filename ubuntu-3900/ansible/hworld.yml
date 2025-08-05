@@ -15,6 +15,12 @@
         update_cache: yes
         upgrade: yes
 
+    - name: Install ubuntu-restricted-extras
+      ansible.builtin.apt:
+        name: ubuntu-restricted-extras
+        state: present
+        update_cache: yes
+
     - name: Add VeraCrypt PPA
       ansible.builtin.apt_repository:
         repo: 'ppa:unit193/encryption'
@@ -51,7 +57,7 @@
       loop:
         - "nvidia-driver-{{ nvidia_driver_version | default('575') }}"
         #- "nvidia-driver-{{ nvidia_driver_version | default('575') }}"
-      notify: Reboot system
+      #notify: Reboot system
 
   #handlers:
     #- name: Reboot system
