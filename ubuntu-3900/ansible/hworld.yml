@@ -21,6 +21,18 @@
         state: present
         update_cache: yes
 
+    - name: Install Totem
+      ansible.builtin.apt:
+        name: totem  # Package name for Totem
+        state: present  # Ensure the package is installed
+        update_cache: yes  # Update the apt cache before installing
+
+    - name: Install VLC
+      ansible.builtin.apt:
+        name: vlc
+        state: present
+        update_cache: yes  # Update the apt cache before installing
+
     - name: Add VeraCrypt PPA
       ansible.builtin.apt_repository:
         repo: 'ppa:unit193/encryption'
@@ -36,18 +48,23 @@
         state: present
 
     - name: Install make
-      apt:
+      ansible.builtin.apt:
         name: make
         state: present
 
     - name: Install git
-      apt:
+      ansible.builtin.apt:
         name: git
         state: present
 
     - name: Install curl package
-      apt:
+      ansible.builtin.apt:
         name: curl
+        state: present
+
+    - name: Install tmux package
+      ansible.builtin.apt:
+        name: tmux
         state: present
 
     - name: Install recommended NVIDIA driver
