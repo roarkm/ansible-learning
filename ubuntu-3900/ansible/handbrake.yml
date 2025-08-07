@@ -17,13 +17,3 @@
         name: handbrake
         state: present
         install_recommends: yes
-
-    - name: Install VLC
-      apt:
-        name: vlc
-        state: present
-
-    - name: Install VLC
-      apt:
-        name: totem
-        state: present
