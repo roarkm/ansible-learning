@@ -3,8 +3,8 @@
   hosts: all
   become: true # call this playbook -k -K flags (ssh pass and sudo pass)
   tasks:
-    - name: My Test
-      command: mkdir -p /home/m/Documents/ansible_test
+    - name: Create ~/Documents/dev
+      command: mkdir -p /home/m/Documents/dev
 
     - name: Run apt update
       ansible.builtin.apt:
