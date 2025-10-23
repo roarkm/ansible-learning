@@ -1,0 +1,49 @@
+---
+- name: Install Davincibox (Davinci Resolve Container)
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Mount the NAS
+      ansible.builtin.shell: |
+        sudo mkdir /mnt/nas-share && \
+        mount -t cifs //192.168.1.184/TGBak /mnt/nas-share -o username=m,uid=1000,gid=1000,password=mpw
+      args:
+        creates: /mnt/nas-share
+      vars:
+        ansible_become: true
+
+    - name: Copy Davinci Resolve to Local
+      ansible.builtin.shell: |
+        cp /mnt/nas-share/backups/DaVinci_Resolve_Studio_20.1_Linux.zip /home/m/Documents/
+      vars:
+        ansible_become: false
+      args:
+        creates: /home/m/Documents/DaVinci_Resolve_Studio_20.1_Linux.zip
+
+    - name: Unzip Davinci Resolve
+      ansible.builtin.shell: |
+        cd /home/m/Documents && unzip DaVinci_Resolve_Studio_20.1_Linux.zip
+      args:
+        creates: /home/m/Documents/DaVinci_Resolve_Studio_20.1_Linux.run
+      vars:
+        ansible_become: false
+
+    - name: Clone davincibox repo
+      ansible.builtin.shell: |
+        cd /home/m/Documents/dev && git clone https://github.com/zelikos/davincibox.git
+      args:
+        creates: /home/m/Documents/dev/davincibox
+      vars:
+        ansible_become: false
+
+    # works on ubuntu 22.04
+    - name: Run DavinciBox Installer Script
+      ansible.builtin.shell: |
+        cd /home/m/Documents/dev/davincibox && \
+        yes | ./setup.sh /home/m/Documents/DaVinci_Resolve_Studio_20.1_Linux.run 2>&1 | \
+        tee /home/m/Documents/dev/davincibox/install.log
+      args:
+        creates: /home/m/Documents/DaVinci_Resolve_Studio_20
+      vars:
+        ansible_become: false

@@ -1,0 +1,61 @@
+# prereqs.yml
+---
+- name: Install Kubernetes prerequisites
+  hosts: all
+  become: yes
+  tasks:
+    - name: Disable swap
+      shell: swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab
+    - name: Load overlay and br_netfilter modules
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
+    - name: Configure sysctl parameters
+      sysctl:
+        name: "{{ item }}"
+        value: "1"
+        state: present
+        reload: yes
+      loop:
+        - net.bridge.bridge-nf-call-iptables
+        - net.ipv4.ip_forward
+    - name: Install Docker/Containerd (example for Docker)
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+    - name: Add Docker group to user
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+    - name: Install Kubernetes packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+    - name: Add Kubernetes apt key
+      apt_key:
+        url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
+        state: present
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: deb https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+        state: present
+    - name: Install kubeadm, kubelet, kubectl
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - kubeadm
+        - kubelet
+        - kubectl
+

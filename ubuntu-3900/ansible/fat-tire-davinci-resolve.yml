@@ -1,0 +1,49 @@
+---
+- name: Install Fat-Tire Davinci Resolve Studio in Distrobox
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Clone davincibox repo
+      ansible.builtin.shell: |
+        cd /home/m/Documents/dev && git clone https://github.com/fat-tire/resolve.git && \
+        mv /home/m/Documents/dev/resolve /home/m/Documents/dev/fat-tire-resolve
+      args:
+        creates: /home/m/Documents/dev/fat-tire-resolve
+      vars:
+        ansible_become: false
+
+    - name: Mount the NAS
+      ansible.builtin.shell: |
+        sudo mkdir /mnt/nas-share && \
+        mount -t cifs //192.168.1.184/TGBak /mnt/nas-share -o username=m,uid=1000,gid=1000,password=mpw
+      args:
+        creates: /mnt/nas-share
+      vars:
+        ansible_become: true
+
+    - name: Copy Davinci Resolve to Local
+      ansible.builtin.shell: |
+        cp /mnt/nas-share/backups/DaVinci_Resolve_Studio_20.0.1_Linux.zip /home/m/Documents/dev/fat-tire-resolve
+      vars:
+        ansible_become: false
+      args:
+        creates: /home/m/Documents/DaVinci_Resolve_Studio_20.0.1_Linux.zip
+
+
+    - name: Clone davincibox repo
+      ansible.builtin.shell: |
+        cp /home/m/Documents/dev/fat-tire-resolve/70-blackmagic-design.rules /etc/udev/rules.d/
+      args:
+        creates: /etc/udev/rules.d/70-blackmagic-design.rules
+      vars:
+        ansible_become: true
+
+    - name: Run DavinciBox Installer Script
+      ansible.builtin.shell: |
+        cd /home/m/Documents/dev/fat-tire-resolve && \
+        yes | ./build.sh 2>&1 | tee /home/m/Documents/dev/fat-tire-install.log
+      args:
+        creates: /home/m/Documents/DaVinci_Resolve_Studio_20
+      vars:
+        ansible_become: false

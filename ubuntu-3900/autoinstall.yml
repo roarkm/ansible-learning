@@ -13,11 +13,11 @@ autoinstall:
     install-server: true
     allow-pw: true
     #authorized-keys: []
-  storage:
-    layout:
-      name: zfs
-  packages:
-    - zfsutils-linux
+  #storage:
+    #layout:
+      #name: zfs
+  #packages:
+    #- zfsutils-linux
   refresh-installer:
     update: true
     channel: "stable/ubuntu-$REL"

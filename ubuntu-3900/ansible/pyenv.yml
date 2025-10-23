@@ -1,0 +1,72 @@
+---
+- name: Install pyenv on Ubuntu
+  hosts: your_ubuntu_servers
+  become: yes # Run tasks with sudo privileges
+
+  vars:
+    pyenv_user: your_username # Replace with the actual user
+    pyenv_home: "/home/{{ pyenv_user }}/.pyenv"
+    pyenv_installer_url: "https://pyenv.run"
+
+  tasks:
+    - name: Update apt cache and install build dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - build-essential
+        - libssl-dev
+        - zlib1g-dev
+        - libbz2-dev
+        - libreadline-dev
+        - libsqlite3-dev
+        - wget
+        - curl
+        - llvm
+        - libncursesw5-dev
+        - xz-utils
+        - tk-dev
+        - libffi-dev
+        - liblzma-dev
+
+    - name: Ensure .pyenv directory exists
+      file:
+        path: "{{ pyenv_home }}"
+        state: directory
+        owner: "{{ pyenv_user }}"
+        group: "{{ pyenv_user }}"
+        mode: '0755'
+
+    - name: Download and run pyenv-installer
+      ansible.builtin.shell: |
+        curl -L {{ pyenv_installer_url }} | bash
+      args:
+        creates: "{{ pyenv_home }}/bin/pyenv"
+      become_user: "{{ pyenv_user }}"
+
+    - name: Configure shell environment for pyenv (bashrc)
+      blockinfile:
+        path: "/home/{{ pyenv_user }}/.bashrc"
+        block: |
+          export PYENV_ROOT="{{ pyenv_home }}"
+          export PATH="$PYENV_ROOT/bin:$PATH"
+          eval "$(pyenv init --path)"
+          eval "$(pyenv virtualenv-init -)"
+        insertafter: EOF # Add to the end of the file
+        owner: "{{ pyenv_user }}"
+        group: "{{ pyenv_user }}"
+        mode: '0644'
+      become_user: "{{ pyenv_user }}"
+
+    - name: Install a specific Python version (example)
+      ansible.builtin.shell: |
+        pyenv install 3.9.18
+      args:
+        creates: "{{ pyenv_home }}/versions/3.9.18"
+      become_user: "{{ pyenv_user }}"
+
+    - name: Set global Python version (example)
+      ansible.builtin.shell: |
+        pyenv global 3.9.18
+      become_user: "{{ pyenv_user }}"

@@ -21,7 +21,18 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Install NVIDIA Container Toolkit
-      ansible.builtin.apt:
-        name: nvidia-container-toolkit
-        state: present
+    - name: Add NVIDIA container repo
+      ansible.builtin.shell: |
+        export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1 && \
+        sudo apt-get install -y \
+        nvidia-container-toolkit=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+        nvidia-container-toolkit-base=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+        libnvidia-container-tools=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+        libnvidia-container1=${NVIDIA_CONTAINER_TOOLKIT_VERSION}
+      #args:
+        #creates: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+    #- name: Install NVIDIA Container Toolkit
+      #ansible.builtin.apt:
+        #name: nvidia-container-toolkit
+        #state: present

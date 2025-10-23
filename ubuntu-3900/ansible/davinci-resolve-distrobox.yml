@@ -10,7 +10,17 @@
         libXtst mesa-libGLU pulseaudio-libs libXinerama polkit polkit-devel libxcrypt-compat \
         xhost libglvnd-egl libglvnd-opengl libxkbcommon libxkbcommon-x11 mtdev xcb-util \
         xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xcb-util-cursor fuse-libs ocl-icd" \
-        --nvidia --name resolve
+        --nvidia --name resolve-test
+
+    #- name: Creating Fedora38 distrobox container
+      #ansible.builtin.shell: |
+        #distrobox create --image fedora:40 --additional-packages \
+        #"unzip git iproute fuse librsvg2-devel alsa-lib apr apr-util libXcursor libXi libXrandr \
+        #libXtst mesa-libGLU pulseaudio-libs libXinerama polkit polkit-devel libxcrypt-compat \
+        #xhost libglvnd-egl libglvnd-opengl libxkbcommon libxkbcommon-x11 mtdev xcb-util \
+        #xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xcb-util-cursor fuse-libs ocl-icd" \
+        #--nvidia --name fedora40-resolve
+
     #- name: Download Davinci Resolve
     #- name: Extract Davinci Resolve
     # unzip DR.zip

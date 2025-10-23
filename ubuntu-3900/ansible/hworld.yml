@@ -5,6 +5,8 @@
   tasks:
     - name: Create ~/Documents/dev
       command: mkdir -p /home/m/Documents/dev
+      vars:
+        ansible_become: false
 
     - name: Run apt update
       ansible.builtin.apt:
@@ -18,6 +20,12 @@
     - name: Install ubuntu-restricted-extras
       ansible.builtin.apt:
         name: ubuntu-restricted-extras
+        state: present
+        update_cache: yes
+
+    - name: Install SMB CLI support
+      ansible.builtin.apt:
+        name: cifs-utils
         state: present
         update_cache: yes
 
@@ -74,9 +82,9 @@
       loop:
         - "nvidia-driver-{{ nvidia_driver_version | default('575') }}"
         #- "nvidia-driver-{{ nvidia_driver_version | default('575') }}"
-      #notify: Reboot system
+      notify: Reboot system
 
-  #handlers:
-    #- name: Reboot system
-      #ansible.builtin.reboot:
-        #reboot_timeout: 600
+  handlers:
+    - name: Reboot system
+      ansible.builtin.reboot:
+        reboot_timeout: 600

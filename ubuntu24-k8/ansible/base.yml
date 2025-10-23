@@ -1,0 +1,44 @@
+---
+- name: Hello Ansible
+  hosts: all
+  become: true # call this playbook -k -K flags (ssh pass and sudo pass)
+  tasks:
+    - name: Create ~/Documents/dev
+      command: mkdir -p /home/m/Documents/dev
+      vars:
+        ansible_become: false
+
+    - name: Run apt update
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Run apt upgrade
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install SMB CLI support
+      ansible.builtin.apt:
+        name: cifs-utils
+        state: present
+        update_cache: yes
+
+    - name: Install make
+      ansible.builtin.apt:
+        name: make
+        state: present
+
+    - name: Install git
+      ansible.builtin.apt:
+        name: git
+        state: present
+
+    - name: Install curl package
+      ansible.builtin.apt:
+        name: curl
+        state: present
+
+    - name: Install tmux package
+      ansible.builtin.apt:
+        name: tmux
+        state: present

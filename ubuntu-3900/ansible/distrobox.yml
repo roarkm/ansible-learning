@@ -16,3 +16,8 @@
       ansible.builtin.apt:
         name: podman
         state: present
+
+    - name: Enable GPU via CDI spec file
+      ansible.builtin.shell: sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia
+      args:
+        creates: /etc/cdi/nvidia.yaml
