@@ -1,0 +1,27 @@
+---
+- name: Copy Dotfiles
+  hosts: all
+  tasks:
+    - name: Copy bash_profile
+      ansible.builtin.copy:
+        src: ../dotfiles/.bash_profile
+        dest: /home/m/.bash_profile
+
+    - name: Copy bashrc
+      ansible.builtin.copy:
+        src: ../dotfiles/.bashrc
+        dest: /home/m/.bashrc
+
+    - name: Copy tmux.conf
+      ansible.builtin.copy:
+        src: ../dotfiles/.tmux.conf
+        dest: /home/m/.tmux.conf
+
+    - name: Copy vimrc
+      ansible.builtin.copy:
+        src: ../dotfiles/.vimrc
+        dest: /home/m/.vimrc
+    #- name: Copy vimrc
+      #ansible.builtin.copy:
+        #src: /
+        #dest: /

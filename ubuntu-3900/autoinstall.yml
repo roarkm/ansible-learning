@@ -12,15 +12,113 @@ autoinstall:
   ssh:
     install-server: true
     allow-pw: true
-    #authorized-keys: []
-  #storage:
-    #layout:
-      #name: zfs
-  #packages:
-    #- zfsutils-linux
+    authorized-keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwDsqIHT/zJlEkyq90LcgNQQmwGcpF1iqoCXw+NDnwW m@mbp"
   refresh-installer:
     update: true
     channel: "stable/ubuntu-$REL"
   source:
     id: ubuntu-desktop-minimal
   shutdown: reboot
+  storage:
+        #match:
+          #ID_SERIAL: "Predator_SSD_GM7000_4TB_PSAG64431301584_1"
+    config:
+      - ptable: gpt
+        path: /dev/nvme0n1
+        wipe: superblock-recursive
+        preserve: false
+        grub_device: true
+        type: disk
+        id: disk-nvme
+      # EFI System Partition (512MB) - Required for UEFI
+      - device: disk-nvme
+        size: 536870912  # 512MB EFI Partition
+        flag: boot  # Fix: Changed from list [boot, esp] to a single string
+        wipe: superblock-recursive
+        preserve: false
+        grub_device: true
+        type: partition
+        id: partition-efi
+      - fstype: vfat
+        volume: partition-efi
+        preserve: false
+        type: format
+        id: format-efi
+      - path: /boot/efi
+        device: format-efi
+        type: mount
+        id: mount-efi
+      # Boot Partition (2GB)
+      - device: disk-nvme
+        size: 2147483648  # 2GB Boot Partition
+        wipe: superblock
+        preserve: false
+        grub_device: false
+        type: partition
+        id: partition-boot
+      - fstype: ext4
+        volume: partition-boot
+        preserve: false
+        type: format
+        id: format-boot
+      - path: /boot
+        device: format-boot
+        type: mount
+        id: mount-boot
+      # Root Partition (LVM)
+      - device: disk-nvme
+        size: -1  # Takes all remaining space
+        wipe: superblock
+        preserve: false
+        type: partition
+        id: partition-root
+      # LVM Volume Group
+      - volume: partition-root
+        preserve: false
+        type: lvm_volgroup
+        id: vg-root
+        name: vg-root
+        devices:
+          - partition-root
+      ## Logical Volume for Swap (8GB)
+      #- volgroup: vg-root
+        #name: lv-swap
+        #size: 8G
+        #type: lvm_partition
+        #id: lv-swap
+      # Logical Volume for Root
+      - volgroup: vg-root
+        name: lv-root
+        size: -1
+        type: lvm_partition
+        id: lv-root
+      # Format and Mount Root Filesystem
+      - fstype: ext4
+        volume: lv-root
+        preserve: false
+        type: format
+        id: format-root
+      - path: /
+        device: format-root
+        type: mount
+        id: mount-root
+      ## Format and Mount Swap
+      #- fstype: swap
+        #volume: lv-swap
+        #preserve: false
+        #type: format
+        #id: format-swap
+      #- path: ''
+        #device: format-swap
+        #type: mount
+        #id: mount-swap
+
+
+      #sizing-policy: all
+  #packages:
+    #- zfsutils-linux
+#nvme0n1                   259:0    0  3.7T  0 disk 
+#├─nvme0n1p1               259:1    0    1G  0 part /boot/efi
+#├─nvme0n1p2               259:2    0    2G  0 part /boot
+#└─nvme0n1p3               259:3    0  3.7T  0 part 

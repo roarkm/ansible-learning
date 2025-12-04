@@ -1,0 +1,27 @@
+[push]
+	default = tracking
+[color]
+	ui = auto
+[core]
+	ignorecase = true
+	excludesfile = /Users/m/.gitignore
+	editor = /usr/local/bin/vim
+[user]
+	name = Michael Roark
+	email = roarkmichael@gmail.com
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[alias]
+	st = status
+	co = checkout
+	last = log -1 HEAD
+	unstage = reset HEAD --
+
+    lf = log --pretty=format:'%Cred%h%Creset %C(bold blue) %<(15)%an%Creset %C(yellow)%d%Creset %s %Cgreen(%cr) ' --abbrev-commit
+    lff = log --pretty=format:'%Cred%h%Creset %C(bold blue) %<(15)%an%Creset %C(yellow)%d%Creset %s %Cgreen(%cr) ' --abbrev-commit --name-status
+    lg = log --graph --pretty=format:'%Cred%h%Creset %C(bold blue) %<(15)%an%Creset %C(yellow)%d%Creset %s %Cgreen(%cr) ' --abbrev-commit
+    me = log --pretty=format:'%Cred%h%Creset %C(bold blue) %<(10)%an%Creset %C(yellow)%d%Creset %s %Cgreen(%cr) ' --abbrev-commit --author='Michael Roark'

@@ -1,0 +1,84 @@
+---
+- hosts: all
+  become: true # call this playbook -k -K flags (ssh pass and sudo pass)
+  tasks:
+  - name: install prerequisites for Docker repository
+    become: yes
+    ansible.builtin.apt:
+      pkg:
+        - ca-certificates
+        - curl
+        - gnupg2
+        - lsb-release
+
+  - name: add docker apt key
+    become: yes
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: add docker apt repo
+    become: yes
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+      state: present
+      update_cache: yes
+
+  - name: install docker and its dependencies
+    become: yes
+    apt:
+      pkg:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+      state: present
+
+  - name: start and enable docker daemon
+    become: yes
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: start and enable containerd daemon
+    become: yes
+    service:
+      name: containerd
+      state: started
+      enabled: yes
+
+  - name: Grant permissions to user m to interact with docker
+    command: usermod -aG docker m
+
+
+#---
+#- hosts: all
+  #become: true # call this playbook -k -K flags (ssh pass and sudo pass)
+  #tasks:
+    #- name: Install prerequisites for Docker repository
+      #apt:
+        #name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+        #update_cache: yes
+
+    #- name: Add Docker GPG key
+      #apt_key:
+        #url: https://download.docker.com/linux/ubuntu/gpg
+
+    #- name: Add Docker APT repository
+      #apt_repository:
+        #repo: deb [arch=amd64] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+
+    #- name: Install Docker CE
+      #apt:
+        #name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+        #update_cache: yes
+
+    ##- name: Install prerequisites for docker-compose
+      ##apt:
+        ##name: ['python3-pip', 'python3-setuptools', 'virtualenv']
+
+    ##- name: Install docker-compose
+      ##pip:
+        ##name: docker-compose

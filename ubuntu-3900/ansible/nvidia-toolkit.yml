@@ -47,3 +47,6 @@
       #ansible.builtin.reboot:
       #when: ansible_reboot_required is defined and ansible_reboot_required
         #wget https://developer.download.nvidia.com/compute/cuda/repos/{{ ansible_distribution|lower }}{{ ansible_distribution_major_version }}{{ ansible_distribution_minor_version }}/x86_64/cuda-keyring_1.1-1_all.deb
+        #
+        #
+        #/home/m/Documents/dev/devbox-test/cuda10/.devbox/nix/profile/default/bin/nvcc
