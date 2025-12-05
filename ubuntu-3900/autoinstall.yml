@@ -81,13 +81,6 @@ autoinstall:
         name: vg-root
         devices:
           - partition-root
-      ## Logical Volume for Swap (8GB)
-      #- volgroup: vg-root
-        #name: lv-swap
-        #size: 8G
-        #type: lvm_partition
-        #id: lv-swap
-      # Logical Volume for Root
       - volgroup: vg-root
         name: lv-root
         size: -1
@@ -103,22 +96,3 @@ autoinstall:
         device: format-root
         type: mount
         id: mount-root
-      ## Format and Mount Swap
-      #- fstype: swap
-        #volume: lv-swap
-        #preserve: false
-        #type: format
-        #id: format-swap
-      #- path: ''
-        #device: format-swap
-        #type: mount
-        #id: mount-swap
-
-
-      #sizing-policy: all
-  #packages:
-    #- zfsutils-linux
-#nvme0n1                   259:0    0  3.7T  0 disk 
-#├─nvme0n1p1               259:1    0    1G  0 part /boot/efi
-#├─nvme0n1p2               259:2    0    2G  0 part /boot
-#└─nvme0n1p3               259:3    0  3.7T  0 part 
